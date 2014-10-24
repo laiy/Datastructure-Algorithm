@@ -1,53 +1,33 @@
-#include <iostream>
 #include <map>
+#include <stdio.h>
+#include <string.h>
 using namespace std;
 
 map<char, int> mp;
 
-void initialize() {
-    mp.insert(pair<char, int>('a', 2));
-    mp.insert(pair<char, int>('b', 4));
-    mp.insert(pair<char, int>('c', 6));
-    mp.insert(pair<char, int>('d', 3));
-    mp.insert(pair<char, int>('e', 6));
-    mp.insert(pair<char, int>('f', 9));
-    mp.insert(pair<char, int>('g', 4));
-    mp.insert(pair<char, int>('h', 8));
-    mp.insert(pair<char, int>('i', 12));
-    mp.insert(pair<char, int>('j', 5));
-    mp.insert(pair<char, int>('k', 10));
-    mp.insert(pair<char, int>('l', 15));
-    mp.insert(pair<char, int>('m', 6));
-    mp.insert(pair<char, int>('n', 12));
-    mp.insert(pair<char, int>('o', 18));
-    mp.insert(pair<char, int>('p', 7));
-    mp.insert(pair<char, int>('q', 14));
-    mp.insert(pair<char, int>('r', 21));
-    mp.insert(pair<char, int>('s', 28));
-    mp.insert(pair<char, int>('t', 8));
-    mp.insert(pair<char, int>('u', 16));
-    mp.insert(pair<char, int>('v', 24));
-    mp.insert(pair<char, int>('w', 9));
-    mp.insert(pair<char, int>('x', 18));
-    mp.insert(pair<char, int>('y', 27));
-    mp.insert(pair<char, int>('z', 36));
-}
-
 int main() {
+    map<char, int> mp;
+    char alp[26] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w','x',
+    'y', 'z'};
+    int num[26] = {2, 4, 6, 3,6, 9, 4, 8, 12, 5, 10, 15, 6, 12, 18,
+    7, 14, 21, 28, 8, 16, 24, 9, 18, 27, 36};
+    for (int i = 0; i < 26; i++) {
+        mp[alp[i]] = num[i];
+    }
     int t, ans, i;
-    string s;
-    cin >> t;
-    initialize();
+    scanf("%d", &t);
     while (t--) {
+        char word[101];
         ans = 0;
-        cin >> s;
-        if (s[0] >= 'A' && s[0] <= 'Z') {
-            s[0] = s[0] - ('Z' - 'z');
+        scanf("%s", word);
+        for (i = 0; i < strlen(word); i++) {
+            if (word[i] >= 'A' && word[i] <= 'Z') {
+                word[i] = word[i] + 32;
+            }
+            ans += mp[word[i]];
         }
-        for (i = 0; i < s.length(); i++) {
-            ans += mp[s[i]];
-        }
-        cout << ans << endl;
+        printf("%d\n", ans);
     }
     return 0;
 }
