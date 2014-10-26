@@ -49,7 +49,7 @@ double caculate(string s) {
                 } else {
                     if (s[i] == ')') {
                         while (true) {
-                            if (st.size() == 1) {
+                            if (sc.top() == '(') {
                                 sc.pop();
                                 break;
                             }
@@ -73,10 +73,6 @@ double caculate(string s) {
                                 }
                             }
                             sc.pop();
-                            if (sc.top() == '(') {
-                                sc.pop();
-                                break;
-                            }
                         }
                     } else {
                         while (true) {
@@ -177,7 +173,7 @@ int main() {
                 }
             }
         }
-        cout << caculate(s) << endl;
+        cout << setiosflags(ios::fixed) << setprecision(3) << caculate(s) << endl;
     }
     return 0;
 }
