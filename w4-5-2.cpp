@@ -29,7 +29,6 @@ double caculate(string s) {
     stack<float> st;
     stack<char> sc;
     string temp = "";
-    double db;
     double d1, d2;
     for (int i = 0; i < s.length(); i++) {
         if (isOperator(s[i])) {
@@ -136,9 +135,9 @@ double caculate(string s) {
         }
         sc.pop();
     }
-    db = st.top();
+    d1 = st.top();
     st.pop();
-    return db;
+    return d1;
 }
 
 int main() {
