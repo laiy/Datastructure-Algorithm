@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <algorithm>
 #include <iostream>
 #include <iomanip>
 
@@ -7,8 +6,40 @@ struct Node {
     int index, data;
 } container[1000];
 
-int cmp(const void *a, const void *b) {
-    return ((Node*)a)->data - ((Node*)b)->data;
+void QuickSort(Node a[], int numsize) {
+    int i = 0, j = numsize - 1;
+    Node val = a[0];
+    if (numsize > 1) {
+        while (i < j) {
+            for (; j > i; j--) {
+                if (a[j].data == val.data) {
+                    if (a[j].index < val.index) {
+                        a[i++] = a[j];
+                        break;
+                    }
+                }
+                if (a[j].data < val.data) {
+                    a[i++] = a[j];
+                    break;
+                }
+            }
+            for (; i < j; i++) {
+                if (a[i].data == val.data) {
+                    if (a[i].index > val.index) {
+                        a[j--] = a[i];
+                        break;
+                    }
+                }
+                if (a[i].data > val.data) {
+                    a[j--] = a[i];
+                    break;
+                }
+            }
+        }
+        a[i] = val;
+        QuickSort(a, i);
+        QuickSort(a + i + 1, numsize - i - 1);
+    }
 }
 
 int main() {
@@ -22,7 +53,7 @@ int main() {
         p->data = temp;
         container[count++] = *p;
     }
-    std::qsort(container, n, sizeof(Node), cmp);
+    QuickSort(container, n);
     for (int i = 0; i < n - 1; i++) {
         printf("%d ", container[i].index);
         sum += container[i].data * (n - i - 1);
