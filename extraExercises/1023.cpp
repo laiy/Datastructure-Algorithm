@@ -2,57 +2,44 @@
 #include <iostream>
 #include <string>
 
-long long hash_table[1000];
+int hash_table[1000];
+bool empty[1000];
 int m;
 
-int hash(long long key) {
-    return key % m;
-}
-
-void add(long long a) {
-    int index = hash(a);
-    if (!hash_table[index]) {
-        hash_table[index] = a;
-    } else {
-        int i = 1;
-        while (true) {
-            index += i * i;
-            index = (index >= m) ? index % m : index;
-            if (!hash_table[index]) {
-                hash_table[index] = a;
-                break;
-            }
-            i++;
+void add(int a) {
+    int index = a % m;
+    int i = 0;
+    while (i < m) {
+        if (empty[index]) {
+            hash_table[index] = a;
+            empty[index] = false;
+            return;
         }
+        i++;
+        index = (a + i * i) % m;
     }
 }
 
-void query(long long a) {
-    int index = hash(a);
-    int origin = index;
-    int i = 1;
-    while (true) {
-        if (hash_table[index] == a) {
+void query(int a) {
+    int index = a % m;
+    int i = 0;
+    while (i < m) {
+        if (hash_table[index] == a && empty[index] == false) {
             printf("yes\n");
             return;
-        } else {
-            index += i * i;
-            index = (index >= m) ? index % m : index;
-            if (index == origin) {
-                printf("no\n");
-                return;
-            }
-            i++;
         }
+        i++;
+        index = (a + i * i) % m;
     }
+    printf("no\n");
 }
 
 void print() {
     for (int i = 0; i < m; i++) {
-        if (!hash_table[i]) {
+        if (empty[i]) {
             printf("%d#NULL\n", i);
         } else {
-            printf("%d#%lld\n", i, hash_table[i]);
+            printf("%d#%d\n", i, hash_table[i]);
         }
     }
 }
@@ -60,9 +47,9 @@ void print() {
 int main() {
     scanf("%d", &m);
     std::string op;
-    long long temp;
+    int temp;
     for (int i = 0; i < m; i++) {
-        hash_table[i] = 0;
+        empty[i] = true;
     }
     while (true) {
         std::cin >> op;
@@ -74,7 +61,7 @@ int main() {
             std::cin >> temp;
             if (op == "Add") {
                 add(temp);
-            } else {
+            } else if (op == "Query"){
                 query(temp);
             }
         }
