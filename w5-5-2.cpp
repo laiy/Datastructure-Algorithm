@@ -39,33 +39,23 @@ void output() {
     printf("%d\n", ans[63]);
 }
 
-map_node find(int n) {
-    map_node temp = map_node((n - 1) / 8, (n - 1) % 8);
-    return temp;
-}
-
-map_node calculate(map_node p, int i) {
-    map_node temp = map_node(p.x + possible_x[i], p.y + possible_y[i]);
-    return temp;
-}
-
 bool cmp(map_node a, map_node b) {
     return a.degree < b.degree;
 }
 
 bool dfs(map_node p, int count) {
     map_node temp;
-    std::vector<map_node> buffer;
+    std::vector<map_node> container;
     visited[p.x][p.y] = true;
     ans[count] = 8 * p.x + p.y + 1;
     if (count == 63) return true;
     for (int i = 0; i < 8; i++) {
-        temp = calculate(p, i);
-        if (is_available(temp.x, temp.y)) buffer.push_back(temp);
+        map_node temp = map_node(p.x + possible_x[i], p.y + possible_y[i]);
+        if (is_available(temp.x, temp.y)) container.push_back(temp);
     }
-    sort(buffer.begin(), buffer.end(), cmp);
-    for (int i = 0; i < buffer.size(); i++) {
-        if (dfs(buffer[i], count + 1)) return true;
+    sort(container.begin(), container.end(), cmp);
+    for (int i = 0; i < container.size(); i++) {
+        if (dfs(container[i], count + 1)) return true;
     }
     visited[temp.x][temp.y] = false;
     return false;
@@ -76,7 +66,7 @@ int main() {
     while (scanf("%d", &start)) {
         if (start == -1) break;
         memset(visited, false, sizeof(visited));
-        map_node p = find(start);
+        map_node p = map_node((start - 1) / 8, (start - 1) % 8);
         dfs(p, 0);
         output();
     }
