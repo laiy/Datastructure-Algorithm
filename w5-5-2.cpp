@@ -57,7 +57,6 @@ bool dfs(map_node p, int count) {
     for (int i = 0; i < container.size(); i++) {
         if (dfs(container[i], count + 1)) return true;
     }
-    visited[temp.x][temp.y] = false;
     return false;
 }
 
