@@ -29,11 +29,11 @@ bool is_available(int x, int y) {
 }
 
 void dfs(Node* p) {
+    if (found) return;
     if (p->x == m - 1 && p->y == n - 1) {
         print();
         found = true;
     } else {
-        if (found) return;
         int temp_x = p->x;
         int temp_y = p->y;
         for (int i = 0; i < 2; i++) {
@@ -65,21 +65,31 @@ void dfs(Node* p) {
 
 int main() {
     int t;
+    char c[10];
     scanf("%d", &t);
     while (t--) {
+        while (!container.empty()) {
+            container.pop_back();
+        }
         scanf("%d%d", &m, &n);
         memset(visited, false, sizeof(visited));
         found = false;
         for (int i = 0; i < m; i++) {
+            scanf("%s", c);
             for (int j = 0; j < n; j++) {
-                scanf("%d", &map[i][j]);
+                map[i][j] = c[j] - '0';
             }
+        }
+        if (map[0][0] == 1 || map[m - 1][n - 1] == 1) {
+            printf("no\n");
+            continue;
         }
         Node* p = new Node;
         container.push_back(std::make_pair<int, int>(0, 0));
         p->x = p->y = 0;
         visited[0][0] = true;
         dfs(p);
+        if (!found) printf("no\n");
     }
     return 0;
 }
