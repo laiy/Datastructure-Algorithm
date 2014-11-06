@@ -1,14 +1,13 @@
+#include <cstdio>
 #include <iostream>
 #include <string>
-#include <string.h>
-using namespace std;
 
 int main() {
     int n;
-    string a, b;
-    cin >> n;
+    std::string a, b;
+    scanf("%d", &n);
     while (n--) {
-        cin >> a >> b;
+        std::cin >> a >> b;
         bool isTrue = false;
         for (int i = 0; i < a.length(); i++) {
             if (!a.find(b)) {
@@ -19,9 +18,9 @@ int main() {
             a = c + a.erase(a.length() - 1, 1);
         }
         if (isTrue) {
-            cout << "True" << endl;
+            printf("True\n");
         } else {
-            cout << "False" << endl;
+            printf("False\n");
         }
     }
     return 0;
