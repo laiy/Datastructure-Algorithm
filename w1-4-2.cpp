@@ -1,83 +1,33 @@
-#include <iostream>
-#include <string>
-#include <algorithm>
-#include <cctype>
-#include <vector>
-using namespace std;
+#include <map>
+#include <stdio.h>
+#include <string.h>
 
-int getNumber(char c);
+std::map<char, int> mp;
 
 int main() {
-    int n;
-    cin >> n;
-    string s;
-    while (n--) {
-        int ans = 0;
-        cin >> s;
-        for (int i = 0; i < s.length(); i++) {
-            ans += getNumber(s[i]);
+    std::map<char, int> mp;
+    char alp[26] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w','x',
+    'y', 'z'};
+    int num[26] = {2, 4, 6, 3,6, 9, 4, 8, 12, 5, 10, 15, 6, 12, 18,
+    7, 14, 21, 28, 8, 16, 24, 9, 18, 27, 36};
+    for (int i = 0; i < 26; i++) {
+        mp[alp[i]] = num[i];
+    }
+    int t, ans, i;
+    scanf("%d", &t);
+    while (t--) {
+        char word[101];
+        ans = 0;
+        scanf("%s", word);
+        for (i = 0; i < strlen(word); i++) {
+            if (word[i] >= 'A' && word[i] <= 'Z') {
+                word[i] = word[i] + 32;
+            }
+            ans += mp[word[i]];
         }
-        cout << ans << endl;
+        printf("%d\n", ans);
     }
     return 0;
 }
 
-int getNumber(char c) {
-    if (c >= 'A' && c <= 'Z') {
-        c = c - ('Z' - 'z');
-    }
-    switch(c) {
-        case 'a':
-            return 2;
-        case 'b':
-            return 4;
-        case 'c':
-            return 6;
-        case 'd':
-            return 3;
-        case 'e':
-            return 6;
-        case 'f':
-            return 9;
-        case 'g':
-            return 4;
-        case 'h':
-            return 8;
-        case 'i':
-            return 12;
-        case 'j':
-            return 5;
-        case 'k':
-            return 10;
-        case 'l':
-            return 15;
-        case 'm':
-            return 6;
-        case 'n':
-            return 12;
-        case 'o':
-            return 18;
-        case 'p':
-            return 7;
-        case 'q':
-            return 14;
-        case 'r':
-            return 21;
-        case 's':
-            return 28;
-        case 't':
-            return 8;
-        case 'u':
-            return 16;
-        case 'v':
-            return 24;
-        case 'w':
-            return 9;
-        case 'x':
-            return 18;
-        case 'y':
-            return 27;
-        case 'z':
-            return 36;
-    }
-}
