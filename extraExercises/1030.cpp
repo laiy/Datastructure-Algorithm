@@ -1,9 +1,8 @@
 #include <iostream>
 #include <vector>
-using namespace std;
 
 template <typename T>
-int binarySearch(const vector<T> table, int bot, int top, const T &x) {
+int binarySearch(const std::vector<T> table, int bot, int top, const T &x) {
     int temp;
     while (bot <= top) {
         temp = (bot + top) / 2;
