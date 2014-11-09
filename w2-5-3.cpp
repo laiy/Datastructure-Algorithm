@@ -1,12 +1,11 @@
-#include <iostream>
-using namespace std;
+#include <cstdio>
 
 int main() {
     int t;
-    cin >> t;
+    scanf("%d", &t);
     while (t--) {
         int n;
-        cin >> n;
+        scanf("%d", &n);
         int ly[30];
         for (int i = 0; i < 30; i++) {
             ly[i] = 0;
@@ -28,9 +27,9 @@ int main() {
             ly[step] = i + 1;
         }
         for (int i = 1; i <= n; i++) {
-            cout << ly[i] << " ";
+            printf("%d ", ly[i]);
         }
-        cout << endl;
+        printf("\n");
     }
     return 0;
 }
