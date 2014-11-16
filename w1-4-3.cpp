@@ -1,8 +1,7 @@
 #include <iostream>
 #include <queue>
-#include <stdio.h>
+#include <cstdio>
 #include <cstring>
-using namespace std;
 
 struct Position {
     Position(int x, int y, int step) {
@@ -21,19 +20,19 @@ bool isValid(int x, int max) {
 int main() {
     int n;
     while (true) {
-        cin >> n;
+        scanf("%d", &n);
         if (!n) break;
         char ly[30][30];
         bool footPrint[30][30];
         bool found = false;
         memset(footPrint, false, sizeof(footPrint));
-        queue<Position> q;
+        std::queue<Position> q;
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= n; j++) {
                 if (i == n || j == n) {
                     ly[i][j] = '1';
                 } else {
-                    cin >> ly[i][j];
+                    std::cin >> ly[i][j];
                 }
             }
         }
@@ -43,7 +42,7 @@ int main() {
             int tempX = q.front().x, tempY = q.front().y;
             int frontStep = q.front().step;
             if (tempX == n - 1 && tempY == n - 1) {
-                cout << frontStep + 1 << endl;
+                std::cout << frontStep + 1 << std::endl;
                 found = true;
                 break;
             }
@@ -74,7 +73,7 @@ int main() {
             }
         }
         if (!found) {
-            cout << '0' << endl;
+            printf("0\n");
         }
     }
     return 0;
