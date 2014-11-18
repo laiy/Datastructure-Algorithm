@@ -18,16 +18,7 @@ int lcs_length(char* x, char *y) {
     for (i = 0; i < m; i++) {
         for (j = 0; j < n; j++) {
             if (i == 0 || j == 0) {
-                if (x[i] == y[j]) {
-                    c[i][j] = 1;
-                } else {
-                    if (i > 0) {
-                        c[i][j] = c[i - 1][j];
-                    }
-                    if (j > 0) {
-                        c[i][j] = c[i][j - 1];
-                    }
-                }
+                c[i][j] = x[i] == y[j] ? 1 : (i > 0) ? c[i - 1][j] : (j > 0) ? c[i][j - 1] : c[i][j];
                 continue;
             }
             c[i][j] = x[i] == y[j] ? c[i - 1][j - 1] + 1 : (c[i - 1][j] >= c[i][j - 1]) ? c[i - 1][j] : c[i][j - 1];
