@@ -6,11 +6,11 @@
  ************************************************************************/
 
 #include <cstdio>
-#include <iostream>
+#include <cstring>
 
-int lcs_length(std::string &x, std::string &y) {
-    int m = x.length();
-    int n = y.length();
+int lcs_length(char* x, char *y) {
+    int m = strlen(x); 
+    int n = strlen(y); 
     int c[1000][1000];
     size_t i, j;
     for (i = 0; i < m; i++) c[i][0] = 0; 
@@ -30,21 +30,15 @@ int lcs_length(std::string &x, std::string &y) {
                 }
                 continue;
             }
-            if (x[i] == y[j]) {
-                c[i][j] = c[i - 1][j - 1] + 1;
-            } else if (c[i - 1][j] >= c[i][j - 1]) {
-                c[i][j] = c[i - 1][j];
-            } else {
-                c[i][j] = c[i][j - 1];
-            }
+            c[i][j] = x[i] == y[j] ? c[i - 1][j - 1] + 1 : (c[i - 1][j] >= c[i][j - 1]) ? c[i - 1][j] : c[i][j - 1];
         }
     }
     return c[m - 1][n - 1];
 }
 
 int main() {
-    std::string x, y;
-    while (std::cin >> x >> y) {
+    char x[1000], y[1000];
+    while (scanf("%s%s", x, y) != EOF) {
         printf("%d\n", lcs_length(x, y));
     }
     return 0;
