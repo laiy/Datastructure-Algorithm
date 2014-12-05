@@ -1,24 +1,25 @@
 /*************************************************************************
-	> File Name: w10-5-1.cpp
+	> File Name: w10-5-2.cpp
 	> Author: LY
 	> Mail: ly.franky@gmail.com
-	> Created Time: Friday, December 05, 2014 PM05:26:39 CST
+	> Created Time: Friday, December 05, 2014 PM07:36:57 CST
  ************************************************************************/
 
 #include <cstdio>
 #include <string>
 #include <iostream>
+#include <cmath>
 
 int m, n;
 double average_find_length = 0;
 std::string table[10000];
 
 void hash(std::string name, int index) {
+    int origin = index, count = 1;
     average_find_length++;
-    while (table[index] != "") index++, average_find_length++;
-    if (index > m - 1) {
-        index = 0;
-        while (table[index] != "") index++, average_find_length++;
+    while (table[index] != "") {
+        index = origin + pow(count++, 2), average_find_length++;
+        while (index > m - 1) index -= m;
     }
     table[index] = name;
 }
@@ -56,4 +57,3 @@ int main() {
     }
     return 0;
 }
-
