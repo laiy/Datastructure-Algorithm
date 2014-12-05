@@ -29,16 +29,11 @@ void output() {
     printf("%.3f\n", average_find_length / n);
 }
 
-void clear_table() {
-    for (int i = 0; i < t; i++) table[i].clear();
-}
-
 int main() {
     int lucky_number;
     while (scanf("%d%d", &n, &t) != EOF) {
         for (int i = 0; i < n; i++) scanf("%d", &lucky_number), hash(lucky_number);
         output();
-        clear_table();
         average_find_length = 0;
     }
     return 0;
