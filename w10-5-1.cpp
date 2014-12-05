@@ -8,16 +8,17 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
-#include <cstring>
 
 int m, n;
+double average_find_length = 0;
 std::string table[10000];
 
 void hash(std::string name, int index) {
-    while (table[index] != "") index++;
+    average_find_length++;
+    while (table[index] != "") index++, average_find_length++;
     if (index > m - 1) {
         index = 0;
-        while (table[index] != "") index++;
+        while (table[index] != "") index++, average_find_length++;
     }
     table[index] = name;
 }
@@ -28,26 +29,21 @@ void get_value_and_hash(std::string name) {
     hash(name, weight % m);
 }
 
+void print(int index) {
+    if (index == -1) printf("NULL\n");
+    else
+        std::cout << table[index] << std::endl;
+}
+
 void output() {
-    for (int i = 0; i < m; i++) {
-        if (table[i] != "") {
-            std::cout << i << ":" << table[i] << std::endl;
-        } else {
-            printf("NULL\n");
-        }
-    }
-        //table[i] != "" ? std::cout << i << ":" << table[i] << std::endl : printf("NULL\n");
-        //if (table[i] != "") {
-            //std::cout << i << ":" << table[i] << std::endl;
-        //} else {
-            //printf("NULL\n");
-        //}
+    for (int i = 0; i < m; i++)
+        printf("%d:", i), table[i] != "" ? print(i) : print(-1);
 }
 
 void clear_table() {
-    for (int i = 0; i < m; i++) {
+    for (int i = 0; i < m; i++)
         if (table[i] != "") table[i] = "";
-    }
+    printf("%.3f\n", average_find_length / n);
 }
 
 int main() {
@@ -56,6 +52,7 @@ int main() {
         for (int i = 0; i < n; i++) std::cin >> name, get_value_and_hash(name);
         output();
         clear_table();
+        average_find_length = 0;
     }
     return 0;
 }
