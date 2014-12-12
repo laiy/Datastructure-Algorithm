@@ -42,9 +42,7 @@ void BSTree_insert(Node<Entry> *&root, const Entry &target) {
 }
 
 template <class Entry>
-void BSTree_remove(Node<Entry> *&root, const Entry &target) {
-    while (root != NULL && root->entry != target)
-        root = root->entry < target ? root->right : root->left;
+void remove_root(Node<Entry> *&root) {
     if (root == NULL) return;
     Node<Entry> *to_delete = root;
     if (root->right == NULL)
@@ -63,5 +61,21 @@ void BSTree_remove(Node<Entry> *&root, const Entry &target) {
         else parent->right = to_delete->left;
     }
     delete to_delete;
+}
+
+template <class Entry>
+void BSTree_remove(Node<Entry> *&root, const Entry &target) {
+    //if (root == NULL) return;
+    //while (root->entry != target) {
+        //root = root->entry < target ? root->right : root->left;
+        //if (root == NULL) return;
+    //}
+    //remove_root(root);
+    if (root == NULL || root->entry == target)
+        return remove_root(root);
+    else if (target < root->entry)
+        return BSTree_remove(root->left, target);
+    else
+        return BSTree_remove(root->right, target);
 }
 
