@@ -21,7 +21,7 @@ void hash(std::string name, int index) {
         index = origin + pow(count++, 2), average_find_length++;
         while (index > m - 1) index -= m;
     }
-    table[index] = name;
+   table[index] = name;
 }
 
 void get_value_and_hash(std::string name) {
@@ -57,3 +57,4 @@ int main() {
     }
     return 0;
 }
+
