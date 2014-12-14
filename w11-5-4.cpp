@@ -65,12 +65,6 @@ void remove_root(Node<Entry> *&root) {
 
 template <class Entry>
 void BSTree_remove(Node<Entry> *&root, const Entry &target) {
-    //if (root == NULL) return;
-    //while (root->entry != target) {
-        //root = root->entry < target ? root->right : root->left;
-        //if (root == NULL) return;
-    //}
-    //remove_root(root);
     if (root == NULL || root->entry == target)
         return remove_root(root);
     else if (target < root->entry)
