@@ -5,6 +5,8 @@
 	> Created Time: Friday, December 19, 2014 PM07:30:30 CST
  ************************************************************************/
 
+#include <cmath>
+#include <algorithm>
 #ifndef AVL_NODE
 #define AVL_NODE
 
@@ -20,9 +22,126 @@ struct AvlNode {
 
 template <class Entry>
 AvlNode<Entry> *AVL_search(AvlNode<Entry> *&root, const Entry entry) {
-    
+    if (root == NULL) return NULL;
+    if (root->entry == entry) return root;
+    if (root->left != NULL) AVL_search(root->left);
+    if (root->right != NULL) AVL_search(root->right);
 }
 
 template <class Entry>
-void AVL_insert(AvlNode<Entry> *&root, const Entry entry);
+void rotate_left(AvlNode<Entry> *&root) {
+    AvlNode<Entry> *right_tree = root->right;
+    root->right = right_tree->left;
+    right_tree->left = root;
+    root = right_tree;
+}
+
+template <class Entry>
+void rotate_right(AvlNode<Entry> *&root) {
+    AvlNode<Entry> *left_tree = root->left;
+    root->left = left_tree->right;
+    left_tree->right = root;
+    root = left_tree;
+}
+
+template <class Entry>
+void right_balance(AvlNode<Entry> *&root) {
+    AvlNode<Entry> *&right_tree = root->right;
+    switch (right_tree->bf) {
+        case -1:
+            root->bf = 0;
+            right_tree->bf = 0;
+            rotate_left(root);
+            break;
+        case 1:
+            AvlNode<Entry> *sub_tree = right_tree->left;
+            switch (sub_tree->bf) {
+                case 0:
+                    root->bf = 0;
+                    right_tree->bf = 0;
+                    break;
+                case 1:
+                    root->bf = 0;
+                    right_tree->bf = -1;
+                    break;
+                case -1:
+                    root->bf = 1;
+                    right_tree->bf = 0;
+                    break;
+            }
+            sub_tree->bf = 0;
+            rotate_right(right_tree);
+            rotate_left(root);
+            break;
+    }
+}
+
+template <class Entry>
+void left_balance(AvlNode<Entry> *&root) {
+    AvlNode<Entry> *&left_tree = root->left;
+    switch (left_tree->bf) {
+        case 1:
+            root->bf = 0;
+            left_tree->bf = 0;
+            rotate_right(root);
+            break;
+        case -1:
+            AvlNode<Entry> *sub_tree = left_tree->right;
+            switch (sub_tree->bf) {
+                case 0:
+                    root->bf = 0;
+                    left_tree->bf = 0;
+                    break;
+                case -1:
+                    root->bf = 0;
+                    left_tree->bf = 1;
+                    break;
+                case 1:
+                    root->bf = -1;
+                    left_tree->bf = 0;
+                    break;
+            }
+            sub_tree->bf = 0;
+            rotate_left(left_tree);
+            rotate_right(root);
+            break;
+    }
+}
+
+template <class Entry>
+void AVL_insert(AvlNode<Entry> *&root, const Entry entry) {
+    if (root == NULL) {
+        root = new AvlNode<Entry>;
+        root->entry = entry;
+        root->left = root->right = NULL;
+        return;
+    } else if (root->entry == entry) return;
+    else if (entry < root->entry) {
+        AVL_insert(root->left, entry);
+        switch (root->bf) {
+            case 1:
+                left_balance(root);
+                break;
+            case 0:
+                root->bf = 1;
+                break;
+            case -1:
+                root->bf = 0;
+                break;
+        }
+    } else {
+        AVL_insert(root->right, entry);
+        switch (root->bf) {
+            case 1:
+                root->bf = 0;
+                break;
+            case 0:
+                root->bf = -1;
+                break;
+            case -1:
+                right_balance(root);
+                break;
+        }
+    }
+}
 
