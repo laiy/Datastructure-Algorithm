@@ -5,8 +5,6 @@
 	> Created Time: Friday, December 19, 2014 PM07:30:30 CST
  ************************************************************************/
 
-#include <cmath>
-#include <algorithm>
 #ifndef AVL_NODE
 #define AVL_NODE
 
@@ -24,8 +22,10 @@ template <class Entry>
 AvlNode<Entry> *AVL_search(AvlNode<Entry> *&root, const Entry entry) {
     if (root == NULL) return NULL;
     if (root->entry == entry) return root;
-    if (root->left != NULL) AVL_search(root->left);
-    if (root->right != NULL) AVL_search(root->right);
+    AvlNode<Entry> *search_left_tree = AVL_search(root->left, entry), *search_right_tree = AVL_search(root->right, entry);
+    if (search_left_tree != NULL) return search_left_tree;
+    if (search_right_tree != NULL) return search_right_tree;
+    return NULL;
 }
 
 template <class Entry>
@@ -109,39 +109,52 @@ void left_balance(AvlNode<Entry> *&root) {
 }
 
 template <class Entry>
-void AVL_insert(AvlNode<Entry> *&root, const Entry entry) {
+void insert(AvlNode<Entry> *&root, const Entry entry, bool &taller) {
     if (root == NULL) {
         root = new AvlNode<Entry>;
         root->entry = entry;
         root->left = root->right = NULL;
+        root->bf = 0;
+        taller = true;
         return;
     } else if (root->entry == entry) return;
     else if (entry < root->entry) {
-        AVL_insert(root->left, entry);
-        switch (root->bf) {
-            case 1:
-                left_balance(root);
-                break;
-            case 0:
-                root->bf = 1;
-                break;
-            case -1:
-                root->bf = 0;
-                break;
-        }
+        insert(root->left, entry, taller);
+        if (taller)
+            switch (root->bf) {
+                case 1:
+                    left_balance(root);
+                    taller = false;
+                    break;
+                case 0:
+                    root->bf = 1;
+                    break;
+                case -1:
+                    root->bf = 0;
+                    taller = false;
+                    break;
+            }
     } else {
-        AVL_insert(root->right, entry);
-        switch (root->bf) {
-            case 1:
-                root->bf = 0;
-                break;
-            case 0:
-                root->bf = -1;
-                break;
-            case -1:
-                right_balance(root);
-                break;
-        }
+        insert(root->right, entry, taller);
+        if (taller)
+            switch (root->bf) {
+                case 1:
+                    root->bf = 0;
+                    taller = false;
+                    break;
+                case 0:
+                    root->bf = -1;
+                    break;
+                case -1:
+                    right_balance(root);
+                    taller = false;
+                    break;
+            }
     }
 }
 
+template <class Entry>
+void AVL_insert(AvlNode<Entry> *&root, const Entry entry) {
+    bool taller = false;
+    insert(root, entry, taller);
+}
