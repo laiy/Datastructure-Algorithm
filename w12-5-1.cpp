@@ -158,3 +158,4 @@ void AVL_insert(AvlNode<Entry> *&root, const Entry entry) {
     bool taller = false;
     insert(root, entry, taller);
 }
+
