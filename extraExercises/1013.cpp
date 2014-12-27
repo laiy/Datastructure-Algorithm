@@ -24,6 +24,7 @@ std::vector<double> ratio;
 
 void init_data() {
     container.clear();
+    ratio.clear();
     memset(node_weight, 0, sizeof(node_weight));
     memset(edge_weight, 0, sizeof(edge_weight));
     memset(visited, false, sizeof(visited));
