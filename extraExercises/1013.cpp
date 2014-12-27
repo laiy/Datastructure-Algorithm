@@ -10,13 +10,13 @@
 #include <vector>
 
 int n, m;
-int node_weight[16];
-int edge_weight[16][16];
-bool visited[16];
-int ans[16];
+int node_weight[100];
+int edge_weight[100][100];
+bool visited[100];
+int ans[100];
 
 struct circumstance {
-    int road[16];
+    int road[100];
 };
 
 std::vector<circumstance> container;
@@ -68,11 +68,11 @@ void find_all_posible_circumstances() {
 int prim(int road[]) {
     int v = road[0], min, index;
     int edge_weight_sum = 0;
-    int low[16], closest[16];
+    int low[100], closest[100];
     for (int i = 0; i < m; i++)
         low[road[i]] = edge_weight[v][road[i]], closest[road[i]] = v;
     for (int i = 1; i < m; i++) {
-        min = 1500;
+        min = 99999;
         for (int j = 0; j < m; j++)
             if (low[road[j]] != 0 && low[road[j]] < min)
                 min = low[road[j]], index = road[j];
@@ -94,18 +94,21 @@ void count_ratio_for_all_circumstances() {
 }
 
 void find_min_ratio_and_output() {
-    double min = 1500;
+    double min = 99999;
     int index;
     for (int i = 0; i < ratio.size(); i++)
         if (ratio[i] < min) min = ratio[i], index = i;
-    for (int i = 0; i < m; i++)
+    for (int i = 0; i < m - 1; i++)
         printf("%d ", container[index].road[i]);
-    printf("\n");
+    printf("%d", container[index].road[m - 1]);
 }
 
 int main() {
+    bool fuck = false;
     while (scanf("%d%d", &n, &m)) {
         if (n == 0 && m == 0) break;
+        if (fuck) printf("\n");
+        fuck = true;
         init_data();
         init_weight();
         find_all_posible_circumstances();
