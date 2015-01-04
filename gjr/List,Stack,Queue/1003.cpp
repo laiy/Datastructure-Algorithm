@@ -1,9 +1,9 @@
 /*************************************************************************
-	> File Name: 1003.cpp
-	> Author: LY
-	> Mail: ly.franky@gmail.com
-	> Created Time: Sunday, January 04, 2015 AM10:22:40 CST
- ************************************************************************/
+> File Name: 1003.cpp
+> Author: LY
+> Mail: ly.franky@gmail.com
+> Created Time: Sunday, January 04, 2015 AM10:22:40 CST
+************************************************************************/
 
 #include <cstdio>
 #include <string>
@@ -58,4 +58,5 @@ int main() {
     }
     return 0;
 }
+
 
