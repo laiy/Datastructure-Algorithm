@@ -7,61 +7,70 @@
 
 #include <cstdio>
 #include <stack>
-#include <string>
-#include <iostream>
-#include <vector>
+#include <cstring>
 #include <algorithm>
 
 int n;
-int origin_order[1005];
-std::vector<std::string> container;
+int origin_order[1005], post_min[1005], color[1005];
+bool edge[1005][1005];
+std::stack<int> s1, s2;
 
-void dfs(std::string output, std::stack<int> s1, std::stack<int> s2, int index, int output_index) {
-    if (s1.empty() && s2.empty() && index >= n) {
-        container.push_back(output);
-        return;
-    }
-    if (s1.empty() ? true : origin_order[index] < s1.top() && index < n) {
-        s1.push(origin_order[index]);
-        dfs(output + " a", s1, s2, index + 1, output_index);
-        s1.pop();
-        if (s1.empty() ? false : s1.top() - 1 == origin_order[index]) return;
-    }
-    if (s1.empty() ? false : s1.top() == output_index) {
-        int temp = s1.top();
-        s1.pop();
-        dfs(output + " b", s1, s2, index, output_index + 1);
-        s1.push(temp);
-        return;
-    }
-    if (s2.empty() ? true : origin_order[index] < s2.top() && index < n) {
-        s2.push(origin_order[index]);
-        dfs(output + " c", s1, s2, index + 1, output_index);
-        s2.pop();
-    }
-    if (s2.empty() ? false : s2.top() == output_index) {
-        s2.pop();
-        dfs(output + " d", s1, s2, index, output_index + 1);
-    }
+void no_answer() {
+    printf("0\n");
+    exit(0);
 }
 
-void dfs_and_output() {
-    std::string output = "a";
-    std::stack<int> s1, s2;
-    s1.push(origin_order[0]);
-    dfs(output, s1, s2, 1, 1);
-    std::sort(container.begin(), container.end());
-    if (container.empty())
-        printf("0\n");
-    else
-        std::cout << container[0] << std::endl;
-    container.clear();
+void dfs(int index, int _color) {
+    color[index] = _color;
+    for (int i = 1; i <= n; i++)
+        if (edge[index][i]) {
+            if (color[i] == _color) no_answer();
+            if (!color[i]) dfs(i, 3 - _color);
+        }
+}
+
+void init_data() {
+    memset(color, 0, sizeof(color));
+    memset(edge, false, sizeof(edge));
+    while (!s1.empty()) s1.pop();
+    while (!s2.empty()) s2.pop();
+}
+
+void init_post_min() {
+    post_min[n + 1] = 1005;
+    for (int i = n; i >= 1; i--) post_min[i] = std::min(origin_order[i], post_min[i + 1]);
+}
+
+void link_edge() {
+    for (int i = 1; i < n; i++)
+        for (int j = i + 1; j <= n; j++)
+            if (origin_order[i] < origin_order[j] && post_min[j + 1] < origin_order[i])
+                edge[i][j] = edge[j][i] = true;
+}
+
+void output() {
+    int to_output = 1;
+    for (int i = 1; i <= n; i++) {
+        if (color[i] == 1) s1.push(origin_order[i]), printf(i == 1 ? "a" : " a");
+        else s2.push(origin_order[i]), printf(" c");
+        while ((s1.empty() ? false : s1.top() == to_output) || (s2.empty() ? false : s2.top() == to_output)) {
+            if (s1.empty() ? false : s1.top() == to_output) s1.pop(), printf(" b");
+            else s2.pop(), printf(" d");
+            to_output++;
+        }
+    }
+    printf("\n");
 }
 
 int main() {
     while (scanf("%d", &n) != EOF) {
-        for (int i = 0; i < n; i++) scanf("%d", &origin_order[i]);
-        dfs_and_output();
+        for (int i = 1; i <= n; i++) scanf("%d", &origin_order[i]);
+        init_data();
+        init_post_min();
+        link_edge();
+        for (int i = 1; i <= n; i++)
+            if (!color[i]) dfs(i, 1);
+        output();
     }
     return 0;
 }
