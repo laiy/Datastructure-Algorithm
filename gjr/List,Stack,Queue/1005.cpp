@@ -14,22 +14,26 @@ int n;
 int origin_order[1005], post_min[1005], color[1005];
 bool edge[1005][1005];
 std::stack<int> s1, s2;
+bool go_next;
 
 void no_answer() {
-    printf("0\n");
-    exit(0);
+    if (!go_next) printf("0\n"), go_next = true;
 }
 
 void dfs(int index, int _color) {
     color[index] = _color;
     for (int i = 1; i <= n; i++)
         if (edge[index][i]) {
-            if (color[i] == _color) no_answer();
+            if (color[i] == _color) {
+                no_answer();
+                break;
+            }
             if (!color[i]) dfs(i, 3 - _color);
         }
 }
 
 void init_data() {
+    go_next = false;
     memset(color, 0, sizeof(color));
     memset(edge, false, sizeof(edge));
     while (!s1.empty()) s1.pop();
@@ -70,6 +74,7 @@ int main() {
         link_edge();
         for (int i = 1; i <= n; i++)
             if (!color[i]) dfs(i, 1);
+        if (go_next) continue;
         output();
     }
     return 0;
