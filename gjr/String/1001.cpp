@@ -7,33 +7,41 @@
 
 #include <cstdio>
 
-//kmp
+int code_dimension, protection_dimension;
+int code[80000], protection[1000000], next[80000];
+
+void get_next() {
+    next[1] = 0;
+    int j = 0;
+    for (int i = 2; i <= code_dimension; i++) {
+        if (code[j + 1] == code[i]) j++;
+        else 
+            while (code[j + 1] != code[i] && j > 0) j = next[j];
+        next[i] = j;
+    }
+}
+
+void kmp_and_output() {
+    int j = 0;
+    for (int i = 1; i <= protection_dimension; i++) {
+        if (code[j + 1] == protection[i]) j++;
+        else 
+            while (code[j + 1] != protection[i] && j > 0) j = next[j];
+        if (j == code_dimension) {
+            printf("%d\n", i - code_dimension);
+            return;
+        }
+    }
+    printf("no solution\n");
+}
 
 int main() {
-    int code_dimension, protection_dimension, temp;
-    int code[80000];
     while (scanf("%d", &code_dimension) != EOF) {
-        for (int i = 0; i < code_dimension; i++) scanf("%d", &code[i]);
+        for (int i = 1; i <= code_dimension; i++) scanf("%d", &code[i]);
         scanf("%d", &protection_dimension);
-        int ans = 0, index = 0;
-        bool go_next = false;
-        for (int i = 0; i < protection_dimension; i++) {
-            scanf("%d", &temp);
-            if (go_next) continue;
-            if (code[index] == temp) {
-                if (index == 0) ans = i;
-                if (index == code_dimension - 1) {
-                    go_next = true;
-                    continue;
-                }
-                index++;
-            } else {
-                index = 0;
-                if (code[index] == temp) ans = i, index++;
-            }
-        }
-        if (index == code_dimension - 1) printf("%d\n", ans);
-        else printf("no solution\n");
+        for (int i = 1; i <= protection_dimension; i++) scanf("%d", &protection[i]);
+        get_next();
+        kmp_and_output();
     }
     return 0;
 }
