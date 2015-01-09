@@ -1,0 +1,17 @@
+3
+2
+South.xiaolitang South.xiongdelong 2
+South.xiongdelong Zhuhai.liyuan 100
+South.xiongdelong South.xiaolitang
+2
+South.xiaolitang South.xiongdelong 2
+South.xiongdelong Zhuhai.liyuan 100
+South.xiongdelong South.xiaolitang
+5
+a b 100
+a c 1
+c d 1
+d e 1
+e b 1
+a b
+
