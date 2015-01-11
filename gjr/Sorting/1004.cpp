@@ -1,10 +1,9 @@
 /*************************************************************************
-	> File Name: 1004.cpp
-	> Author: LY
-	> Mail: ly.franky@gmail.com
-	> Created Time: Sunday, January 11, 2015 PM04:10:51 CST
- ************************************************************************/
-
+> File Name: 1004.cpp
+> Author: LY
+> Mail: ly.franky@gmail.com
+> Created Time: Sunday, January 11, 2015 PM04:10:51 CST
+************************************************************************/
 #include <cstdio>
 #include <algorithm>
 
