@@ -10,9 +10,9 @@
 #include <cstring>
 
 static char first[200], second[200];
-static int i, j;
+static short i, j;
 
-bool is_sign(char *s, int i) {
+bool is_sign(char *s, short i) {
     return (i == 0 || !isdigit(s[i - 1])) && (s[i] == '+' || s[i] == '-') && isdigit(s[i + 1]);
 }
 
@@ -34,7 +34,7 @@ void init(char *s) {
 
 int cmp() {
     init(first), init(second);
-    static int len1, len2, k;
+    static short len1, len2, k;
     for (i = 1, j = 1; i < strlen(first) && j < strlen(second); i++, j++) {
         if (isdigit(first[i]) && isdigit(second[j])) {
             k = i;
@@ -58,11 +58,11 @@ int cmp() {
 }
 
 int main() {
-    int n;
-    scanf("%d", &n);
-    for (int l = 1; l <= n; l++) {
+    short n;
+    scanf("%hd", &n);
+    for (short l = 1; l <= n; l++) {
         scanf("%s%s", first, second);
-        printf("%d %d\n", l, cmp());
+        printf("%hd %hd\n", l, cmp());
     }
     return 0;
 }
