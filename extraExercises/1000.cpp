@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 
 struct Node {
     Node(int x, int y, int cost) {
@@ -24,8 +24,8 @@ int main() {
         std::cin >> n;
         std::vector<Node> container;
         int temp;
-        bool footPrint[100];
-        memset(footPrint, true, sizeof(footPrint));
+        bool visited[100];
+        memset(visited, true, sizeof(visited));
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 std::cin >> temp;
@@ -37,15 +37,15 @@ int main() {
         std::sort(container.begin(), container.end(), compare);
         std::vector<Node>::iterator it = container.begin();
         long long ans = 0;
-        footPrint[it->x] = false;
-        footPrint[it->y] = false;
+        visited[it->x] = false;
+        visited[it->y] = false;
         ans += (long long)it->cost;
         for (int i = 0; i < n - 2; i++) {
             it = container.begin();
             while (it != container.end()) {
-                if ((footPrint[it->x] && (!footPrint[it->y])) || ((!footPrint[it->x]) && footPrint[it->y])) {
-                    footPrint[it->x] = false;
-                    footPrint[it->y] = false;
+                if ((visited[it->x] && (!visited[it->y])) || ((!visited[it->x]) && visited[it->y])) {
+                    visited[it->x] = false;
+                    visited[it->y] = false;
                     ans += (long long)it->cost;
                     break;
                 }
