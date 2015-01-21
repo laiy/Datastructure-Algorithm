@@ -1,49 +1,22 @@
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <iomanip>
+#include <vector>
+#include <algorithm>
 
 struct Node {
     int index, data;
-} container[1000];
+};
 
-void QuickSort(Node a[], int numsize) {
-    int i = 0, j = numsize - 1;
-    Node val = a[0];
-    if (numsize > 1) {
-        while (i < j) {
-            for (; j > i; j--) {
-                if (a[j].data == val.data) {
-                    if (a[j].index < val.index) {
-                        a[i++] = a[j];
-                        break;
-                    }
-                }
-                if (a[j].data < val.data) {
-                    a[i++] = a[j];
-                    break;
-                }
-            }
-            for (; i < j; i++) {
-                if (a[i].data == val.data) {
-                    if (a[i].index > val.index) {
-                        a[j--] = a[i];
-                        break;
-                    }
-                }
-                if (a[i].data > val.data) {
-                    a[j--] = a[i];
-                    break;
-                }
-            }
-        }
-        a[i] = val;
-        QuickSort(a, i);
-        QuickSort(a + i + 1, numsize - i - 1);
-    }
+std::vector<Node*> container;
+
+bool cmp(const Node *a, const Node *b) {
+    if (a->data == b->data) return a->index < b->index;
+    return a->data < b->data;
 }
 
 int main() {
-    int n, temp, count = 0;
+    int n, temp;
     scanf("%d", &n);
     double sum = 0;
     for (int i = 0; i < n; i++) {
@@ -51,15 +24,15 @@ int main() {
         Node* p = new Node;
         p->index = i + 1;
         p->data = temp;
-        container[count++] = *p;
+        container.push_back(p);
     }
-    QuickSort(container, n);
+    std::sort(container.begin(), container.end(), cmp);
     for (int i = 0; i < n - 1; i++) {
-        printf("%d ", container[i].index);
-        sum += container[i].data * (n - i - 1);
+        printf("%d ", container[i]->index);
+        sum += container[i]->data * (n - i - 1);
     }
-    printf("%d\n", container[n - 1].index);
-    std::cout << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sum / n << std::endl;
+    printf("%d\n", container[n - 1]->index);
+    printf("%.2f\n", sum / n);
     return 0;
 }
 
