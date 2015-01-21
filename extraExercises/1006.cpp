@@ -26,6 +26,8 @@ bool is_valid(int x, int y) {
 }
 
 int bfs() {
+    if (matrix[0][0]) return 0;
+    if (n == 1 && !matrix[0][0]) return 1;
     std::queue<Position> q;
     q.push(Position(0, 0, 1));
     memset(visited, false, sizeof(visited));
