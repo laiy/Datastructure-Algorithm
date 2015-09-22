@@ -4,22 +4,11 @@
 int remember_arr[401], length, z, result[100];
 char x[401];
 
-/*
- * remember 10 ^ y % z in the remember_arr for n belong to [0..length-1]
- */
-int awesome_remember(int y) {
-    if (y == 0)
-        return 1;
-    else {
-        return remember_arr[y] = ((10 % z) * (awesome_remember(y - 1))) % z;
-    }
-}
-
 int main() {
     int t;
     scanf("%d", &t);
     while (t--) {
-        int n, b[100], i, j, count;
+        int n, b[100], i, j, count, temp;
         scanf("%d", &n);
         for (i = 0; i < n; i++)
             scanf("%d", &b[i]);
@@ -29,7 +18,12 @@ int main() {
         for (i = 0; i < n; i++) {
             z = b[i];
             remember_arr[0] = 1;
-            awesome_remember(length - 1);
+
+            temp = 10 % z;
+            for (j = 1; j < length; j++) {
+                remember_arr[j] = (temp * remember_arr[j - 1]) % z;
+            }
+
             result[i] = 0;
             count = length - 1;
             for (j = 0; j < length; j++) {
