@@ -1,8 +1,3 @@
-// Problem#: 1046
-// Submission#: 3844923
-// The source code is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
-// URI: http://creativecommons.org/licenses/by-nc-sa/3.0/
-// All Copyright reserved by Informatic Lab of Sun Yat-sen University
 #include <cstdio>
 #include <vector>
 #include <algorithm>
