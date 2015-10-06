@@ -20,25 +20,28 @@ int n;
 int root;
 int parent[1001];
 int identitys[1001];
-std::vector<Binary_Node> container[1001];
+std::vector<Binary_Node> container;
 
 int find_root() {
     for (int i = 1; i <= n; i++)
         if (!parent[identitys[i]]) return identitys[i];
+    return 0;
 }
 
 void output(int node) {
     if (!node) return;
-    printf("%c", container[node][0].character);
-    output(container[node][0].left);
-    output(container[node][0].right);
+    int temp;
+    for (int i = 0; (size_t)i < container.size(); i++)
+        if (container[i].identity == node)
+            temp = i;
+    printf("%c", container[temp].character);
+    output(container[temp].left);
+    output(container[temp].right);
     if (node == root) printf("\n");
 }
 
 void clear() {
-    for (int i = 1; i <= n; i++) {
-        container[identitys[i]].clear();
-    }
+    container.clear();
 }
 
 int main() {
@@ -51,9 +54,9 @@ int main() {
             identitys[i] = node->identity;
             if (node->left) parent[node->left] = node->identity;
             if (node->right) parent[node->right] = node->identity;
-            container[node->identity].push_back(*node);
+            container.push_back(*node);
         }
-        root= find_root();
+        root = find_root();
         output(root);
         clear();
     }
