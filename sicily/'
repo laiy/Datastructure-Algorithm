@@ -1,0 +1,37 @@
+#include <cstdio>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <limits.h>
+
+std::string ranking[100], median;
+int n, median_value;
+
+int difference(std::string a, std::string b) {
+}
+
+void try_this_one(std::string s) {
+    int value = 0;
+    for (int i = 0; i < n; i++)
+        value += difference(ranking[i], s);
+    if (value < median_value)
+        median_value = value, median = s;
+}
+
+void search_all_possibilities() {
+    char a[5] = {'A', 'B', 'C', 'D', 'E'};
+    do {
+        try_this_one(std::string(a));
+    } while (std::next_permutation(a, a + 5));
+}
+
+int main() {
+    while (scanf("%d", &n) && n != 0) {
+        median_value = INT_MAX;
+        for (int i = 0; i < n; i++)
+            std::cin >> ranking[i];
+        search_all_possibilities();
+    }
+    return 0;
+}
+
