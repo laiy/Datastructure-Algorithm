@@ -1,14 +1,13 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
-#include <hash_set>
 #include <queue>
+#include <cstring>
 
-using namespace __gnu_cxx;
-
-int n, destination, top, bottom, a, b, c, d;
+int n, destination, top, bottom, a, b, c, d, base, i, j;
 std::string ans;
-__gnu_cxx::hash_set<int> visited;
+int fact[] = {1, 1, 2, 6, 24, 120, 720, 5040, 40320};
+bool visited[40321];
 
 struct State {
     int state;
@@ -18,6 +17,24 @@ struct State {
         this->step = step;
     }
 };
+
+int encode(int n)
+{
+    static int tmp[8];
+    for (i = 7; i >= 0; i--) {
+        tmp[i] = n % 10;
+        n /= 10;
+    }
+
+    for (i = 0; i < 8; i++) {
+        base = 0;
+        for (j = i + 1; j < 8; j++)
+            if (tmp[i] > tmp[j]) base++;
+        n += fact[7 - i] * base;
+    }
+
+    return n;
+}
 
 int OP_A(int state) {
     return state / 10000 + state % 10000 * 10000;
@@ -63,7 +80,7 @@ void bfs() {
         State s = q.front();
         q.pop();
 
-        if (visited.find(s.state) != visited.end())
+        if (visited[encode(s.state)])
             continue;
         if (s.step.length() > (size_t)n)
             break;
@@ -72,7 +89,7 @@ void bfs() {
             break;
         }
 
-        visited.insert(s.state);
+        visited[encode(s.state)] = true;
 
         q.push(State(OP_A(s.state), s.step + "A"));
         q.push(State(OP_B(s.state), s.step + "B"));
@@ -85,7 +102,7 @@ int main() {
 
         ans = "NOT FOUND";
         destination = 0;
-        visited.clear();
+        memset(visited, 0, sizeof(visited));
 
         int temp[8], base = 1, i;
         for (i = 0; i < 8; i++)
