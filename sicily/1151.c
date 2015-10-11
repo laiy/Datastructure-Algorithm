@@ -1,12 +1,14 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
-#include <set>
+#include <hash_set>
 #include <queue>
+
+using namespace __gnu_cxx;
 
 int n, destination, top, bottom, a, b, c, d;
 std::string ans;
-std::set<int> visited;
+__gnu_cxx::hash_set<int> visited;
 
 struct State {
     int state;
