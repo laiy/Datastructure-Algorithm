@@ -2,41 +2,42 @@
 #include <queue>
 #include <hash_map>
 
-int a[] = {1, 2, 3, 4, 8, 7, 6, 5};
-
-__gnu_cxx::hash_map<int, char> record;
-
-inline int OP_A(int n) {
+inline int OP_A(int &n) {
     return (n & 4095) << 12 | n >> 12;
 }
 
-inline int OP_B(int n) {
+inline int OP_B(int &n) {
     return (( 7 << 9 | 7 << 21 ) & n) >> 9 | (~(7 << 9 | 7 << 21) & n) << 3;
 }
 
-inline int OP_C(int n) {
+inline int OP_C(int &n) {
     return ((7 | 7 << 9 | 7 << 12 | 7 << 21) & n) | ((7 << 3) & n) << 3 | ((7 << 6) & n) << 12 | ((7 << 15) & n) >> 12 | ((7 << 18) & n) >> 3;
 }
 
-inline int resume_B(int n) {
+inline int resume_B(int &n) {
     return ((7 | 7 << 12) & n) << 9 | (~(7 | 7 << 12) & n) >> 3;
 }
 
-inline int resume_C(int n) {
+inline int resume_C(int &n) {
     return ((7 | 7 << 9 | 7 << 12 | 7 << 21) & n) | ((7 << 3) & n) << 12 | ((7 << 6) & n) >> 3 | ((7 << 15) & n) << 3 | ((7 << 18) & n) >> 12;
 }
 
 inline int zip(int *a) {
-    int code = 0;
+    static int code;
+    code = 0;
     for (int i = 0; i < 8; ++i)
         code |= (a[i] - 1) << (3 * i);
     return  code;
 }
 
+int a[] = {1, 2, 3, 4, 8, 7, 6, 5}, origin = zip(a);
+
+__gnu_cxx::hash_map<int, char> record;
+
 void bfs() {
     int temp, code;
     std::queue<int> q;
-    q.push(zip(a));
+    q.push(origin);
     while (!q.empty()) {
         code = q.front();
         q.pop();
@@ -54,8 +55,8 @@ void bfs() {
 
 int main() {
     bfs();
-    int n, arr[8], i, j, origin = zip(a);
-    char s[100];
+    int n, arr[8], i, j;
+    char s[30];
     while (scanf("%d", &n) && n != -1) {
         for (i = 0; i < 8; i++)
             scanf("%d", arr + i);
