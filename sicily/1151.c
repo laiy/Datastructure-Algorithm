@@ -2,13 +2,11 @@
 #include <queue>
 #include <hash_map>
 
-using namespace __gnu_cxx;
-
 int a[] = {1, 2, 3, 4, 8, 7, 6, 5};
 
 __gnu_cxx::hash_map<int, char> record;
 
-inline  int OP_A(int n) {
+inline int OP_A(int n) {
     return (n & 4095) << 12 | n >> 12;
 }
 
