@@ -1,34 +1,31 @@
 #include <cstdio>
-#include <iostream>
-#include <hash_map>
-#include <hash_set>
-#include <string>
 #include <queue>
+#include <hash_map>
 
 using namespace __gnu_cxx;
 
 int a[] = {1, 2, 3, 4, 8, 7, 6, 5};
-__gnu_cxx::hash_map<int, std::string> record;
 
-struct Node {
-    int code;
-    std::string step;
-    Node(int c, std::string s) {
-        this->code = c;
-        this->step = s;
-    }
-};
+__gnu_cxx::hash_map<int, char> record;
 
 inline  int OP_A(int n) {
     return (n & 4095) << 12 | n >> 12;
 }
 
 inline int OP_B(int n) {
-    return (( 7 << 9 | 7 << 21 ) & n) >> 9 | (~( 7 << 9 | 7 << 21 ) & n) << 3;
+    return (( 7 << 9 | 7 << 21 ) & n) >> 9 | (~(7 << 9 | 7 << 21) & n) << 3;
 }
 
 inline int OP_C(int n) {
     return ((7 | 7 << 9 | 7 << 12 | 7 << 21) & n) | ((7 << 3) & n) << 3 | ((7 << 6) & n) << 12 | ((7 << 15) & n) >> 12 | ((7 << 18) & n) >> 3;
+}
+
+inline int resume_B(int n) {
+    return ((7 | 7 << 12) & n) << 9 | (~(7 | 7 << 12) & n) >> 3;
+}
+
+inline int resume_C(int n) {
+    return ((7 | 7 << 9 | 7 << 12 | 7 << 21) & n) | ((7 << 3) & n) << 12 | ((7 << 6) & n) >> 3 | ((7 << 15) & n) << 3 | ((7 << 18) & n) >> 12;
 }
 
 inline int zip(int *a) {
@@ -39,33 +36,53 @@ inline int zip(int *a) {
 }
 
 void bfs() {
-    std::queue<Node> q;
-    q.push(Node(zip(a), ""));
-    __gnu_cxx::hash_set<int> visited;
+    int temp, code;
+    std::queue<int> q;
+    q.push(zip(a));
     while (!q.empty()) {
-        Node temp = q.front();
+        code = q.front();
         q.pop();
-        if (visited.find(temp.code) != visited.end())
-            continue;
-        visited.insert(temp.code);
-        record[temp.code] = temp.step;
-        q.push(Node(OP_A(temp.code), temp.step + "A"));
-        q.push(Node(OP_B(temp.code), temp.step + "B"));
-        q.push(Node(OP_C(temp.code), temp.step + "C"));
+        temp = OP_A(code);
+        if (!record[temp])
+            record[temp] = 'A', q.push(temp);
+        temp = OP_B(code);
+        if (!record[temp])
+            record[temp] = 'B', q.push(temp);
+        temp = OP_C(code);
+        if (!record[temp])
+            record[temp] = 'C', q.push(temp);
     }
 }
 
 int main() {
     bfs();
-    int n, arr[8], i, code;
+    int n, arr[8], i, j, origin = zip(a);
+    char s[100];
     while (scanf("%d", &n) && n != -1) {
         for (i = 0; i < 8; i++)
             scanf("%d", arr + i);
-        code = zip(arr);
-        if (record[code].length() <= (size_t)n)
-            std::cout << record[code].length() << " " << record[code] << std::endl;
-        else
+        for (i = zip(arr), j = 0; i != origin && j < n; j++) {
+            s[j] = record[i];
+            switch (s[j]) {
+                case 'A':
+                    i = OP_A(i);
+                    break;
+                case 'B':
+                    i = resume_B(i);
+                    break;
+                case 'C':
+                    i = resume_C(i);
+                    break;
+            }
+        }
+        if (i != origin)
             printf("-1\n");
+        else {
+            printf("%d ", j);
+            while (j--)
+                putchar(s[j]);
+            putchar('\n');
+        }
     }
     return 0;
 }
