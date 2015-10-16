@@ -8,11 +8,8 @@ struct Node {
         own = o;
         need = n;
     }
-    bool operator<(const Node &other) const {
-        if (need == other.need)
-            return own > other.own;
-        else
-            return need < other.need;
+    inline bool operator<(const Node &other) const {
+        return need < other.need;
     }
 };
 
