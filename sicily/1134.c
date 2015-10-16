@@ -19,8 +19,8 @@ struct Node {
 int main() {
     int n, s, a, b, i, temp;
     bool yes;
+    std::vector<Node> v;
     while (scanf("%d %d", &n, &s) && n != 0) {
-        std::vector<Node> v;
         while (n--)
             scanf("%d %d", &a, &b), v.push_back(Node(a, b));
         std::sort(v.begin(), v.end());
@@ -38,6 +38,7 @@ int main() {
             printf("YES\n");
         else
             printf("NO\n");
+        v.clear();
     }
     return 0;
 }
