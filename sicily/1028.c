@@ -3,7 +3,7 @@
 
 int len;
 
-bool minus(char *p) {
+bool divide(char *p) {
     if (p[len - 1] % 2 == 0) {
         int t = 0;
         for (int i = 0; i < len; i++) {
@@ -36,7 +36,7 @@ int main() {
         len = strlen(p);
         times = 1;
         while (true) {
-            if (minus(p))
+            if (divide(p))
                 times++;
             else
                 break;
