@@ -23,13 +23,14 @@ struct queen {
 
 int main() {
     int k, r, c, i, j, temp_r, temp_c, ans, count = 0;
+    std::vector<queen> v;
     while (scanf("%d %d", &n, &m) && !(n == 0 && m == 0)) {
+        v.clear();
         ans = 0;
         bool unsafe[n + 1][m + 1];
         bool visited[n + 1][m + 1];
         memset(unsafe, 0, sizeof(unsafe));
         memset(visited, 0, sizeof(visited));
-        std::vector<queen> v;
         scanf("%d", &k);
         for (i = 0; i < k; i++)
             scanf("%d %d", &r, &c), v.push_back(queen(r, c)), visited[r][c] = true;;
