@@ -4,7 +4,7 @@
 
 int n, m;
 
-bool is_valid(int r, int c) {
+inline bool is_valid(int r, int c) {
     return r >= 1 && r <= n && c >= 1 && c <= m;
 }
 
@@ -23,19 +23,20 @@ struct queen {
 
 int main() {
     int k, r, c, i, j, temp_r, temp_c, ans, count = 0;
-    bool b;
     while (scanf("%d %d", &n, &m) && !(n == 0 && m == 0)) {
         ans = 0;
         bool unsafe[n + 1][m + 1];
+        bool visited[n + 1][m + 1];
         memset(unsafe, 0, sizeof(unsafe));
-        std::vector<queen> v, s;
+        memset(visited, 0, sizeof(visited));
+        std::vector<queen> v;
         scanf("%d", &k);
         for (i = 0; i < k; i++)
-            scanf("%d %d", &r, &c), v.push_back(queen(r, c)), s.push_back(queen(r, c));
+            scanf("%d %d", &r, &c), v.push_back(queen(r, c)), visited[r][c] = true;;
         scanf("%d", &k);
         for (i = 0; i < k; i++) {
             scanf("%d %d", &r, &c);
-            s.push_back(queen(r, c));
+            visited[r][c] = true;
             if (!unsafe[r][c])
                 unsafe[r][c] = true, ans++;
             for (j = 0; j < 8; j++) {
@@ -48,7 +49,7 @@ int main() {
         scanf("%d", &k);
         for (i = 0; i < k; i++) {
             scanf("%d %d", &r, &c);
-            s.push_back(queen(r, c));
+            visited[r][c] = true;
             if (!unsafe[r][c])
                 unsafe[r][c] = true, ans++;
         }
@@ -60,16 +61,7 @@ int main() {
             for (j = 0; j < 8; j++) {
                 temp_r = r + queen_x[j];
                 temp_c = c + queen_y[j];
-                while (is_valid(temp_r, temp_c)) {
-                    b = false;
-                    for (k = 0; (size_t)k < s.size(); k++) {
-                        if (s[k].x == temp_r && s[k].y == temp_c) {
-                            b = true;
-                            break;
-                        }
-                    }
-                    if (b)
-                        break;
+                while (is_valid(temp_r, temp_c) && !visited[temp_r][temp_c]) {
                     if (!unsafe[temp_r][temp_c])
                         unsafe[temp_r][temp_c] = true, ans++;
                     temp_r += queen_x[j];
