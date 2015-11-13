@@ -1,69 +1,91 @@
 #include <cstdio>
-#include <vector>
+#include <algorithm>
 #include <cmath>
+#include <vector>
 
-#define DEVIATION 0.00001
-#define min(a, b) a < b ? a : b
+#define INF 1e9
+#define ESP 1e-6
 #define max(a, b) a > b ? a : b
 
+inline bool equal(double a, double b) {
+    return fabs(a - b) <= ESP;
+}
+
 struct Line {
-    double x1, x2, y1, y2;
-    Line(double x1, double x2, double y1, double y2) {
+    double x1, y1, x2, y2;
+    double k, b;
+    Line(double &x1, double &y1, double &x2, double &y2, double &k, double &b) {
         this->x1 = x1;
-        this->x2 = x2;
         this->y1 = y1;
+        this->x2 = x2;
         this->y2 = y2;
+        this->k = k;
+        this->b = b;
+    }
+    bool operator<(const Line &l) const {
+        if (!equal(k, l.k))
+            return k < l.k;
+        if (!equal(b, l.b))
+            return b < l.b;
+        if (!equal(x1, l.x1))
+            return x1 < l.x1;
+        if (!equal(y1, l.y1))
+            return y1 < l.y1;
+        if (!equal(x2, l.x2))
+            return x2 < l.x2;
+        return y2 < l.y2;
     }
 };
 
-inline bool equal(double a, double b) {
-    return fabs(a - b) < DEVIATION;
+
+inline void swap(double &a, double &b) {
+    double t = a;
+    a = b;
+    b = t;
 }
 
-inline bool coincide(Line a, Line b) {
-    if (equal(a.x1, a.x2) && equal(b.x1, b.x2) && equal(b.x1, a.x1)) {
-        if ((a.y1 <= b.y2 && a.y1 >= b.y1) || (a.y2 <= b.y2 && a.y2 >= b.y1) || (a.y1 <= b.y1 && a.y1 >= b.y2) || (a.y2 <= b.y1 && a.y2 >= b.y2)) {
-            a.y1 = min(b.y2, min(b.y1, min(a.y1, a.y2))), a.y2 = max(b.y2, max(b.y1, max(a.y1, a.y2)));
-            return true;
-        }
-        return false;
+inline bool judge(Line a, Line b) {
+    if (equal(a.k, b.k) && equal(a.b, b.b)) {
+        if (equal(a.k, INF))
+            return equal(b.y1, a.y2) || b.y1 < a.y2;
+        else
+            return equal(a.x2, b.x1) || a.x2 > b.x1;
     }
-    static double temp;
-    temp = (a.x1 - a.x2) / (a.y1 - a.y2);
-    if (equal(temp, (b.x1 - b.x2) / (b.y1 - b.y2)) && equal((a.x1 - b.x1) / (a.y1 - b.y1), temp))
-        if ((a.x1 <= b.x2 && a.x1 >= b.x1) || (a.x2 <= b.x2 && a.x2 >= b.x1) || (a.x1 <= b.x1 && a.x1 >= b.x2) || (a.x2 <= b.x1 && a.x2 >= b.x2)) {
-            if (temp > 0)
-                a.y1 = min(b.y2, min(b.y1, min(a.y1, a.y2))), a.y2 = max(b.y2, max(b.y1, max(a.y1, a.y2))), a.x1 = min(a.x1, min(a.x2, min(b.x1, b.x2))), a.x2 = max(a.x1, max(a.x2, max(b.x1, b.x2)));
-            else
-                a.y1 = min(b.y2, min(b.y1, min(a.y1, a.y2))), a.y2 = max(b.y2, max(b.y1, max(a.y1, a.y2))), a.x2 = min(a.x1, min(a.x2, min(b.x1, b.x2))), a.x1 = max(a.x1, max(a.x2, max(b.x1, b.x2)));
-            return true;
-        }
     return false;
 }
 
-int main() {
-    int n, i, count, total;
-    double x1, y1, x2, y2;
-    bool found;
+int main(){
+    int n, ans, i;
+    double x1, y1, x2, y2, k, b;
+    bool flag;
     while (scanf("%d", &n) && n != 0) {
-        count = 0;
         std::vector<Line> v;
-        total = n;
-        while (n--) {
+        ans = n;
+        for (i = 0; i < n ;i++) {
             scanf("%lf %lf %lf %lf", &x1, &y1, &x2, &y2);
-            Line l = Line(x1, x2, y1, y2);
-            found = false;
-            for (i = 0; (size_t)i < v.size(); i++)
-                if (coincide(v[i], l)) {
-                    found = true;
-                    count++;
-                    break;
-                }
-            if (!found)
-                v.push_back(l);
-
+            flag = equal(x1, x2);
+            if(flag && y1 > y2)
+                swap(y1, y2);
+            else if(!flag && x1 > x2) {
+                swap(x1, x2);
+                swap(y1, y2);
+            }
+            k = flag ? INF : (y2 - y1) / (x2 - x1);
+            b = flag ? x1 : y1 - k * x1;
+            v.push_back(Line(x1, y1, x2, y2, k, b));
         }
-        printf("%d\n", total - count);
+        std::sort(v.begin(), v.end());
+        for (i = 0; i < n - 1; i++) {
+            if (judge(v[i], v[i + 1])) {
+                ans--;
+                if (equal(v[i].k, INF))
+                    v[i + 1].y2 = max(v[i].y2, v[i + 1].y2);
+                else
+                    v[i + 1].x2 = max(v[i].x2, v[i + 1].x2);
+            }
+        }
+        printf("%d\n", ans);
     }
+    return 0;
 }
 
