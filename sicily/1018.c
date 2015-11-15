@@ -30,12 +30,11 @@ inline std::string mini(std::string a, std::string b) {
     return smaller(a, b) ? a : b;
 }
 
-bool test(std::string a, std::string b, std::string c, std::string d, std::string e) {
+inline bool test(std::string a, std::string b, std::string c, std::string d, std::string e) {
     static int sum;
     static std::string temp;
     temp = mini(c, mini(d, e));
-    sum = 0;
-    sum += (temp == c) ? 1 + (smaller(d, e) ? 0 : 3) : (temp == d) ? 2 + (smaller(c, e) ? 0 : 3) : 3 + (smaller(c, d) ? 0 : 3);
+    sum = (temp == c) ? 1 + (smaller(d, e) ? 0 : 3) : (temp == d) ? 2 + (smaller(c, e) ? 0 : 3) : 3 + (smaller(c, d) ? 0 : 3);
     return a == order[(nth_position(b) + 4 * sum) % 52];
 }
 
