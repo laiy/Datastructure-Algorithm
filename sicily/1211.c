@@ -1,14 +1,5 @@
 #include <cstdio>
 #include <cstring>
-#include <queue>
-
-struct Node {
-    int location, step;
-    Node(int location, int step) {
-        this->location = location;
-        this->step = step;
-    }
-};
 
 int main() {
     int n, m, l, i, from, to, query, a, b, k, j, x;
