@@ -57,15 +57,13 @@ void dfs(Floor f) {
     std::sort(horizontal_lines.begin(), horizontal_lines.end(), horizontal_lines_cmp);
     int temp_x = -1, start_y, end_y;
     for (int i = 0; (size_t)i < horizontal_lines.size(); i++) {
-        /* printf("line: from_x: %d from_y: %d to_x: %d to_y: %d\n", horizontal_lines[i].from_x, horizontal_lines[i].from_y, horizontal_lines[i].to_x, horizontal_lines[i].to_y); */
         if (horizontal_lines[i].from_x != temp_x) {
             if (i) {
                 if (end_y - start_y == floor_width && temp_x != f.from_x && temp_x != f.to_x) {
-                    printf("horizontal_lines cut.\n");
                     Floor up = Floor(f.from_x, f.from_y, temp_x, f.to_y);
                     Floor down = Floor(temp_x, f.from_y, f.to_x, f.to_y);
                     for (int j = 0; (size_t)j < f.pieces.size(); j++) {
-                        if (f.pieces[j].xh >= temp_x)
+                        if (f.pieces[j].xh <= temp_x)
                             up.pieces.push_back(f.pieces[j]);
                         else
                             down.pieces.push_back(f.pieces[j]);
@@ -79,22 +77,20 @@ void dfs(Floor f) {
             start_y = horizontal_lines[i].from_y;
             end_y = horizontal_lines[i].to_y;
         } else {
-            if (horizontal_lines[i].from_x == end_y)
+            if (horizontal_lines[i].from_y == end_y)
                 end_y = horizontal_lines[i].to_y;
         }
     }
     std::sort(vertical_lines.begin(), vertical_lines.end(), vertical_lines_cmp);
     int temp_y = -1, start_x, end_x;
     for (int i = 0; (size_t)i < vertical_lines.size(); i++) {
-        /* printf("line: from_x: %d from_y: %d to_x: %d to_y: %d\n", vertical_lines[i].from_x, vertical_lines[i].from_y, vertical_lines[i].to_x, vertical_lines[i].to_y); */
         if (vertical_lines[i].from_y != temp_y) {
             if (i) {
                 if (end_x - start_x == floor_height && temp_y != f.from_y && temp_y != f.to_y) {
-                    printf("vertical_lines cut.\n");
-                    Floor left = Floor(f.from_y, f.from_x, temp_y, f.to_x);
-                    Floor right = Floor(temp_y, f.from_x, f.to_y, f.to_x);
+                    Floor left = Floor(f.from_x, f.from_y, f.to_x, temp_y);
+                    Floor right = Floor(f.from_x, temp_y, f.to_x, f.to_y);
                     for (int j = 0; (size_t)j < f.pieces.size(); j++) {
-                        if (f.pieces[j].yh >= temp_y)
+                        if (f.pieces[j].yh <= temp_y)
                             left.pieces.push_back(f.pieces[j]);
                         else
                             right.pieces.push_back(f.pieces[j]);
@@ -108,7 +104,7 @@ void dfs(Floor f) {
             start_x = vertical_lines[i].from_x;
             end_x = vertical_lines[i].to_x;
         } else {
-            if (vertical_lines[i].from_y == end_x)
+            if (vertical_lines[i].from_x == end_x)
                 end_x = vertical_lines[i].to_x;
         }
     }
