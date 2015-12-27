@@ -7,7 +7,7 @@
 inline long long mul_and_mod(long long a, long long b, long long mod) {
     long long c;
     const int base = 10;
-    for (c = 0; b != 0; b /= base)
+    for (c = 0; b; b /= base)
         c += (b % base) * a, c %= mod, a = (a * base) % mod;
     return c;
 }
