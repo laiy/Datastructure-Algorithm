@@ -2,10 +2,21 @@
 #include <cstring>
 
 /*
- * calculate ans ^ 3 % mod
+ * a * b % mod
+ */
+inline long long mul_and_mod(long long a, long long b, long long mod) {
+    long long c;
+    const int base = 10;
+    for (c = 0; b != 0; b /= base)
+        c += (b % base) * a, c %= mod, a = (a * base) % mod;
+    return c;
+}
+
+/*
+ * ans ^ 3 % mod
  */
 inline long long cube_end(long long ans, long long mod) {
-    return (((ans % mod) * (ans % mod) % mod) * (ans % mod)) % mod;
+    return mul_and_mod(mul_and_mod(ans, ans, mod), ans, mod);
 }
 
 int main() {
@@ -24,7 +35,6 @@ int main() {
         base = 10;
         for (i = length - 2; i >= 0; i--) {
             match += (input[i] - '0') * base;
-            ans += base;
             while (cube_end(ans, base * 10) != match)
                 ans += base;
             base *= 10;
