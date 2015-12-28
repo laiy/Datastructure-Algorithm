@@ -19,7 +19,7 @@ int main() {
     int passengers;
     int cost_A, passenger_A, cost_B, passenger_B;
     int count = 1;
-    long long lower, upper, t, gcd, x, y;
+    long long lower, upper, k, gcd, x, y;
     while (scanf("%d", &passengers) && passengers) {
         scanf("%d %d", &cost_A, &passenger_A);
         scanf("%d %d", &cost_B, &passenger_B);
@@ -29,8 +29,8 @@ int main() {
             y *= passengers / gcd;
             upper = floor((double)y / (passenger_A / gcd));
             lower = ceil((double)-x / (passenger_B / gcd));
-            t = passenger_B * cost_A - passenger_A * cost_B <= 0 ? upper : lower;
-            printf("Data set %d: %lld aircraft A, %lld aircraft B\n", count++, x + (passenger_B / gcd) * t, y - (passenger_A / gcd) * t);
+            k = passenger_B * cost_A - passenger_A * cost_B <= 0 ? upper : lower;
+            printf("Data set %d: %lld aircraft A, %lld aircraft B\n", count++, x + (passenger_B / gcd) * k, y - (passenger_A / gcd) * k);
         } else
             printf("Data set %d: cannot be flown\n", count++);
     }
