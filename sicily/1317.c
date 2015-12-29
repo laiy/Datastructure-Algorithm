@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
-#include <algorithm>
 #include <queue>
 
 struct Node {
@@ -15,9 +14,6 @@ struct Node {
         this->i = n.i;
         this->j = n.j;
         this->weight = n.weight;
-    }
-    bool operator<(const Node &n) const {
-        return this->weight < n.weight;
     }
 };
 
@@ -67,7 +63,6 @@ void heuristic_dfs() {
         return;
     }
     int k, min = 10;
-    /* std::sort(nodes.begin(), nodes.end()); */
     std::vector<Node>::iterator it, r;
     for (it = nodes.begin(); it != nodes.end(); it++)
         if (it->weight < min)
