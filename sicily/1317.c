@@ -43,15 +43,20 @@ inline void update_weight(int i, int j) {
 
 inline void count_weight(int i, int j) {
     int k, v;
+    static int record_i, record_j;
+    record_i = i, record_j = j;
     for (k = 1; k < 10; k++)
-        update_weight(i, k);
+        if (k != j)
+            update_weight(i, k);
     for (k = 1; k < 10; k++)
-        update_weight(k, j);
+        if (k != i)
+            update_weight(k, j);
     i = ((i - 1) / 3) * 3 + 1;
     j = ((j - 1) / 3) * 3 + 1;
-    for (k = 0; k < 3; k++)
-        for (v = 0; v < 3; v++)
-            update_weight(i + k, j + v);
+    for (k = i; k < i + 3; k++)
+        for (v = j; v < j + 3; v++)
+            if (k != record_i && v != record_j)
+                update_weight(k, v);
 }
 
 void heuristic_dfs() {
@@ -61,10 +66,14 @@ void heuristic_dfs() {
         solutions++;
         return;
     }
-    int k;
-    std::sort(nodes.begin(), nodes.end());
-    Node temp = Node(nodes[0]);
-    nodes.erase(nodes.begin());
+    int k, min = 10;
+    /* std::sort(nodes.begin(), nodes.end()); */
+    std::vector<Node>::iterator it, r;
+    for (it = nodes.begin(); it != nodes.end(); it++)
+        if (it->weight < min)
+            min = it->weight, r = it;
+    Node temp = Node(*r);
+    nodes.erase(r);
     std::queue<int> q;
     for (k = 1; k < 10; k++)
         if (!(row_space[temp.i][k] || col_space[temp.j][k] || block_space[(temp.i - 1) / 3][(temp.j - 1) / 3][k]))
@@ -72,14 +81,12 @@ void heuristic_dfs() {
     while (!q.empty()) {
         k = q.front();
         q.pop();
-
         row_space[temp.i][k] = true;
         col_space[temp.j][k] = true;
         block_space[(temp.i - 1) / 3][(temp.j - 1) / 3][k] = true;
         count_weight(temp.i, temp.j);
         board[temp.i][temp.j] = k;
         heuristic_dfs();
-        board[temp.i][temp.j] = -1;
         row_space[temp.i][k] = false;
         col_space[temp.j][k] = false;
         block_space[(temp.i - 1) / 3][(temp.j - 1) / 3][k] = false;
@@ -89,7 +96,7 @@ void heuristic_dfs() {
 }
 
 int main() {
-    int t, i, j, k, weight, count = 1;
+    int t, i, j, k, weight, count = 1, location;
     scanf("%d", &t);
     char input[10];
     bool fuck = false;
@@ -114,6 +121,7 @@ int main() {
                         block_space[(i - 1) / 3][(j) / 3][board[i][j + 1]] = true;
             }
         }
+        location = 0;
         for (i = 1; i <= 9; i++)
             for (j = 1; j <= 9; j++)
                 if (board[i][j] == -1) {
