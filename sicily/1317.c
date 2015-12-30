@@ -78,11 +78,8 @@ int main() {
     int t, count = 1;
     scanf("%d", &t);
     char input[10];
-    bool fuck = false;
     while (t--) {
-        if (!fuck)
-            fuck = true;
-        else
+        if (count != 1)
             printf("\n");
         memset(board, -1, sizeof(board));
         memset(nodes, -1, sizeof(nodes));
