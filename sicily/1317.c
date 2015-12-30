@@ -17,19 +17,19 @@ inline void update_weight(int &i, int &j) {
 }
 
 inline void count_weight(int i, int j) {
-    static int record_i, record_j;
-    record_i = i, record_j = j;
+    static int count_record_i, count_record_j;
+    count_record_i = i, count_record_j = j;
     for (m = 1; m < 10; m++)
-        if (m != j)
+        if (m != count_record_j)
             update_weight(i, m);
     for (m = 1; m < 10; m++)
-        if (m != i)
+        if (m != count_record_i)
             update_weight(m, j);
     i = ((i - 1) / 3) * 3 + 1;
     j = ((j - 1) / 3) * 3 + 1;
     for (m = i; m < i + 3; m++)
         for (v = j; v < j + 3; v++)
-            if (m != record_i && v != record_j)
+            if (m != count_record_i && v != count_record_j)
                 update_weight(m, v);
 }
 
@@ -40,19 +40,19 @@ inline void heuristic_dfs() {
         solutions++;
         return;
     }
-    int k;
     min = 10;
-    int record_i, record_j;
+    short record_i, record_j, k;
     for (i = 1; i <= 9; i++)
         for (j = 1; j <= 9; j++)
             if (nodes[i][j] != -1 && nodes[i][j] < min)
                 min = nodes[i][j], record_i = i, record_j = j;
-    nodes[record_i][record_j] = -1;
+    short board_record_i = (record_i - 1) / 3, board_record_j = (record_j - 1) / 3;
     std::queue<int> q;
     for (k = 1; k < 10; k++)
-        if (!(row_space[record_i][k] || col_space[record_j][k] || block_space[(record_i - 1) / 3][(record_j - 1) / 3][k]))
+        if (!(row_space[record_i][k] || col_space[record_j][k] || block_space[board_record_i][board_record_j][k]))
             q.push(k);
     c--;
+    nodes[record_i][record_j] = -1;
     short temp[10][10];
     memcpy(temp, nodes, sizeof(nodes));
     while (!q.empty()) {
@@ -62,12 +62,12 @@ inline void heuristic_dfs() {
         count_weight(record_i, record_j);
         row_space[record_i][k] = true;
         col_space[record_j][k] = true;
-        block_space[(record_i - 1) / 3][(record_j - 1) / 3][k] = true;
+        block_space[board_record_i][board_record_j][k] = true;
         board[record_i][record_j] = k;
         heuristic_dfs();
         row_space[record_i][k] = false;
         col_space[record_j][k] = false;
-        block_space[(record_i - 1) / 3][(record_j - 1) / 3][k] = false;
+        block_space[board_record_i][board_record_j][k] = false;
         memcpy(nodes, temp, sizeof(nodes));
     }
     c++;
