@@ -17,7 +17,7 @@ inline void update_weight(int &i, int &j) {
 }
 
 inline void count_weight(int i, int j) {
-    int record_i, record_j;
+    static int record_i, record_j;
     record_i = i, record_j = j;
     for (m = 1; m < 10; m++)
         if (m != j)
