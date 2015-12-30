@@ -1,13 +1,11 @@
 #include <cstdio>
 #include <cstring>
-#include <queue>
 
 short board[10][10];
 bool col_space[10][10], row_space[10][10], block_space[3][3][10];
-int solutions;
 short record[10][10];
 short nodes[10][10];
-int i, j, min, weight, k, m, v, c, update_value;
+int solutions, i, j, min, weight, k, m, v, c, update_value;
 
 inline void update_weight(int &i, int &j) {
     if (nodes[i][j] == -1 || row_space[i][update_value] || col_space[j][update_value] || \
@@ -47,29 +45,24 @@ inline void heuristic_dfs() {
             if (nodes[i][j] != -1 && nodes[i][j] < min)
                 min = nodes[i][j], record_i = i, record_j = j;
     short board_record_i = (record_i - 1) / 3, board_record_j = (record_j - 1) / 3;
-    std::queue<int> q;
-    for (k = 1; k < 10; k++)
-        if (!(row_space[record_i][k] || col_space[record_j][k] || block_space[board_record_i][board_record_j][k]))
-            q.push(k);
     c--;
     nodes[record_i][record_j] = -1;
     short temp[10][10];
     memcpy(temp, nodes, sizeof(nodes));
-    while (!q.empty()) {
-        k = q.front();
-        q.pop();
-        update_value = k;
-        count_weight(record_i, record_j);
-        row_space[record_i][k] = true;
-        col_space[record_j][k] = true;
-        block_space[board_record_i][board_record_j][k] = true;
-        board[record_i][record_j] = k;
-        heuristic_dfs();
-        row_space[record_i][k] = false;
-        col_space[record_j][k] = false;
-        block_space[board_record_i][board_record_j][k] = false;
-        memcpy(nodes, temp, sizeof(nodes));
-    }
+    for (k = 1; k < 10; k++)
+        if (!(row_space[record_i][k] || col_space[record_j][k] || block_space[board_record_i][board_record_j][k])) {
+            update_value = k;
+            count_weight(record_i, record_j);
+            row_space[record_i][k] = true;
+            col_space[record_j][k] = true;
+            block_space[board_record_i][board_record_j][k] = true;
+            board[record_i][record_j] = k;
+            heuristic_dfs();
+            row_space[record_i][k] = false;
+            col_space[record_j][k] = false;
+            block_space[board_record_i][board_record_j][k] = false;
+            memcpy(nodes, temp, sizeof(nodes));
+        }
     c++;
     nodes[record_i][record_j] = min;
 }
