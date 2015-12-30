@@ -7,16 +7,13 @@ bool col_space[10][10], row_space[10][10], block_space[3][3][10];
 int solutions;
 short record[10][10];
 short nodes[10][10];
-int i, j, min, weight, k, m, v;
+int i, j, min, weight, k, m, v, c, update_value;
 
 inline void update_weight(int &i, int &j) {
-    if (nodes[i][j] == -1)
+    if (nodes[i][j] == -1 || row_space[i][update_value] || col_space[j][update_value] || \
+            block_space[(i - 1) / 3][(j - 1) / 3][update_value])
         return;
-    weight = 9;
-    for (k = 1; k < 10; k++)
-        if (row_space[i][k] || col_space[j][k] || block_space[(i - 1) / 3][(j - 1) / 3][k])
-            weight--;
-    nodes[i][j] = weight;
+    nodes[i][j]--;
 }
 
 inline void count_weight(int i, int j) {
@@ -36,7 +33,7 @@ inline void count_weight(int i, int j) {
                 update_weight(m, v);
 }
 
-inline void heuristic_dfs(int c) {
+inline void heuristic_dfs() {
     if (!c) {
         if (!solutions)
             memcpy(record, board, sizeof(board));
@@ -55,25 +52,30 @@ inline void heuristic_dfs(int c) {
     for (k = 1; k < 10; k++)
         if (!(row_space[record_i][k] || col_space[record_j][k] || block_space[(record_i - 1) / 3][(record_j - 1) / 3][k]))
             q.push(k);
+    c--;
+    short temp[10][10];
+    memcpy(temp, nodes, sizeof(nodes));
     while (!q.empty()) {
         k = q.front();
         q.pop();
+        update_value = k;
+        count_weight(record_i, record_j);
         row_space[record_i][k] = true;
         col_space[record_j][k] = true;
         block_space[(record_i - 1) / 3][(record_j - 1) / 3][k] = true;
-        count_weight(record_i, record_j);
         board[record_i][record_j] = k;
-        heuristic_dfs(c - 1);
+        heuristic_dfs();
         row_space[record_i][k] = false;
         col_space[record_j][k] = false;
         block_space[(record_i - 1) / 3][(record_j - 1) / 3][k] = false;
+        memcpy(nodes, temp, sizeof(nodes));
     }
-    count_weight(record_i, record_j);
+    c++;
     nodes[record_i][record_j] = min;
 }
 
 int main() {
-    int t, count = 1, c;
+    int t, count = 1;
     scanf("%d", &t);
     char input[10];
     bool fuck = false;
@@ -107,7 +109,7 @@ int main() {
                     nodes[i][j] = weight;
                     c++;
                 }
-        heuristic_dfs(c);
+        heuristic_dfs();
         if (!solutions)
             printf("Puzzle %d has no solution\n", count++);
         else if (solutions > 1)
