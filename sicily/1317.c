@@ -1,113 +1,93 @@
 #include <cstdio>
 #include <cstring>
-#include <vector>
 #include <queue>
-
-struct Node {
-    int i, j, weight;
-    Node(int i, int j, int weight) {
-        this->i = i;
-        this->j = j;
-        this->weight = weight;
-    }
-    Node(const Node &n) {
-        this->i = n.i;
-        this->j = n.j;
-        this->weight = n.weight;
-    }
-};
-
-std::vector<Node> nodes;
 
 short board[10][10];
 bool col_space[10][10], row_space[10][10], block_space[3][3][10];
 int solutions;
 short record[10][10];
-bool exist[10][10];
+short nodes[10][10];
+int i, j, min, weight, k, m, v;
 
-inline void update_weight(int i, int j) {
-    if (exist[i][j])
+inline void update_weight(int &i, int &j) {
+    if (nodes[i][j] == -1)
         return;
-    int weight = 9, k;
+    weight = 9;
     for (k = 1; k < 10; k++)
         if (row_space[i][k] || col_space[j][k] || block_space[(i - 1) / 3][(j - 1) / 3][k])
             weight--;
-    for (k = 0; (size_t)k < nodes.size(); k++)
-        if (nodes[k].i == i && nodes[k].j == j)
-            nodes[k].weight = weight;
+    nodes[i][j] = weight;
 }
 
 inline void count_weight(int i, int j) {
-    int k, v;
-    static int record_i, record_j;
+    int record_i, record_j;
     record_i = i, record_j = j;
-    for (k = 1; k < 10; k++)
-        if (k != j)
-            update_weight(i, k);
-    for (k = 1; k < 10; k++)
-        if (k != i)
-            update_weight(k, j);
+    for (m = 1; m < 10; m++)
+        if (m != j)
+            update_weight(i, m);
+    for (m = 1; m < 10; m++)
+        if (m != i)
+            update_weight(m, j);
     i = ((i - 1) / 3) * 3 + 1;
     j = ((j - 1) / 3) * 3 + 1;
-    for (k = i; k < i + 3; k++)
+    for (m = i; m < i + 3; m++)
         for (v = j; v < j + 3; v++)
-            if (k != record_i && v != record_j)
-                update_weight(k, v);
+            if (m != record_i && v != record_j)
+                update_weight(m, v);
 }
 
-void heuristic_dfs() {
-    if (nodes.empty()) {
+inline void heuristic_dfs(int c) {
+    if (!c) {
         if (!solutions)
             memcpy(record, board, sizeof(board));
         solutions++;
         return;
     }
-    int k, min = 10;
-    std::vector<Node>::iterator it, r;
-    for (it = nodes.begin(); it != nodes.end(); it++)
-        if (it->weight < min)
-            min = it->weight, r = it;
-    Node temp = Node(*r);
-    nodes.erase(r);
+    int k;
+    min = 10;
+    int record_i, record_j;
+    for (i = 1; i <= 9; i++)
+        for (j = 1; j <= 9; j++)
+            if (nodes[i][j] != -1 && nodes[i][j] < min)
+                min = nodes[i][j], record_i = i, record_j = j;
+    nodes[record_i][record_j] = -1;
     std::queue<int> q;
     for (k = 1; k < 10; k++)
-        if (!(row_space[temp.i][k] || col_space[temp.j][k] || block_space[(temp.i - 1) / 3][(temp.j - 1) / 3][k]))
+        if (!(row_space[record_i][k] || col_space[record_j][k] || block_space[(record_i - 1) / 3][(record_j - 1) / 3][k]))
             q.push(k);
     while (!q.empty()) {
         k = q.front();
         q.pop();
-        row_space[temp.i][k] = true;
-        col_space[temp.j][k] = true;
-        block_space[(temp.i - 1) / 3][(temp.j - 1) / 3][k] = true;
-        count_weight(temp.i, temp.j);
-        board[temp.i][temp.j] = k;
-        heuristic_dfs();
-        row_space[temp.i][k] = false;
-        col_space[temp.j][k] = false;
-        block_space[(temp.i - 1) / 3][(temp.j - 1) / 3][k] = false;
-        count_weight(temp.i, temp.j);
+        row_space[record_i][k] = true;
+        col_space[record_j][k] = true;
+        block_space[(record_i - 1) / 3][(record_j - 1) / 3][k] = true;
+        count_weight(record_i, record_j);
+        board[record_i][record_j] = k;
+        heuristic_dfs(c - 1);
+        row_space[record_i][k] = false;
+        col_space[record_j][k] = false;
+        block_space[(record_i - 1) / 3][(record_j - 1) / 3][k] = false;
     }
-    nodes.push_back(temp);
+    count_weight(record_i, record_j);
+    nodes[record_i][record_j] = min;
 }
 
 int main() {
-    int t, i, j, k, weight, count = 1, location;
+    int t, count = 1, c;
     scanf("%d", &t);
     char input[10];
     bool fuck = false;
     while (t--) {
-        if (!fuck) {
+        if (!fuck)
             fuck = true;
-        } else {
+        else
             printf("\n");
-        }
         memset(board, -1, sizeof(board));
+        memset(nodes, -1, sizeof(nodes));
         memset(col_space, 0, sizeof(col_space));
         memset(row_space, 0, sizeof(row_space));
         memset(block_space, 0, sizeof(block_space));
-        memset(exist, 0, sizeof(exist));
         solutions = 0;
-        nodes.clear();
         for (i = 1; i <= 9; i++) {
             scanf("%s", input);
             for (j = 0; j < 9; j++) {
@@ -116,7 +96,7 @@ int main() {
                         block_space[(i - 1) / 3][(j) / 3][board[i][j + 1]] = true;
             }
         }
-        location = 0;
+        c = 0;
         for (i = 1; i <= 9; i++)
             for (j = 1; j <= 9; j++)
                 if (board[i][j] == -1) {
@@ -124,10 +104,10 @@ int main() {
                     for (k = 1; k < 10; k++)
                         if (row_space[i][k] || col_space[j][k] || block_space[(i - 1) / 3][(j - 1) / 3][k])
                             weight--;
-                    nodes.push_back(Node(i, j, weight));
-                } else
-                    exist[i][j] = true;
-        heuristic_dfs();
+                    nodes[i][j] = weight;
+                    c++;
+                }
+        heuristic_dfs(c);
         if (!solutions)
             printf("Puzzle %d has no solution\n", count++);
         else if (solutions > 1)
